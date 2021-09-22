@@ -1,6 +1,6 @@
 {
   "name": "checkly-cli",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "Command line tool for checklyhq.com",
   "main": "bin/index.js",
   "scripts": {
