@@ -16,5 +16,21 @@
                 "comparison": "EQUALS"
             }]
         }
+    }, {
+        "activated": true,
+        "checkType": "API",
+        "name": "api-check-2",
+        "script": "",
+        "frequency": 5,
+        "request": {
+            "method": "GET",
+            "url": "https://api.checklyhq.com/",
+            "assertions": [{
+                "source": "STATUS_CODE",
+                "target": "200",
+                "property": "",
+                "comparison": "EQUALS"
+            }]
+        }
     }]
 }
