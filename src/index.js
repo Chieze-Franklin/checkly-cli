@@ -6,7 +6,7 @@ import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
 import { getCheckDefinitions } from "./check-definitions.js";
-import { createCheck } from "./checkly-api.js";
+import { createOrUpdateCheck, getChecks } from "./checkly-api.js";
 
 export async function main() {
   // fancy block to draw the checkly racoon logo in the terminal
@@ -44,5 +44,8 @@ export async function main() {
     .argv;
 
   const checkDefs = await getCheckDefinitions(argv.checks);
-  checkDefs.forEach((checkDef) => createCheck(checkDef, { apiKey: argv["api-key"] }))
+
+  const options = { apiKey: argv["api-key"] };
+  const existingChecks = await getChecks(options);
+  checkDefs.forEach((checkDef) => createOrUpdateCheck(checkDef, existingChecks, options))
 }
