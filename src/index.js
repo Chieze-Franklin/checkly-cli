@@ -5,6 +5,8 @@ import terminalImage from "terminal-image";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
+import { getCheckDefinitions } from "./check-definitions.js";
+
 export async function main() {
   try {
     console.log(await terminalImage.file(`${root.path}/assets/images/checkly_logo.png`, { width: "60%", height: "60%" }));
@@ -36,5 +38,6 @@ export async function main() {
     .usage("Usage: --checks <glob pattern>")
     .argv;
 
-  console.log(argv);
+  const checkDefs = await getCheckDefinitions(argv.checks);
+  console.log(checkDefs);
 }

@@ -19,6 +19,7 @@
     "app-root-path": "^3.0.0",
     "boxen": "^5.1.2",
     "chalk": "^4.1.2",
+    "glob": "^7.1.7",
     "terminal-image": "^2.0.0",
     "yargs": "^17.1.1"
   }

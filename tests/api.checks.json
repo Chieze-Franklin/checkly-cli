@@ -1,3 +1,21 @@
 {
-    "checks": [{}]
+    "name": "api-checks-suit-1",
+    "checks": [{
+        "activated": true,
+        "checkType": "API",
+        "name": "api-check-1",
+        "script": "",
+        "request": {
+            "method": "GET",
+            "url": "https://api.checklyhq.com/",
+            "assertions": [
+            {
+                "source": "STATUS_CODE",
+                "target": "200",
+                "property": "",
+                "comparison": "EQUALS"
+            }
+            ]
+        }
+    }]
 }
