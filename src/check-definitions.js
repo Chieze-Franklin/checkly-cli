@@ -2,6 +2,9 @@ import fs from 'fs';
 import glob from 'glob';
 import path from 'path';
 
+// read all files matching the glob pattern
+// and return their checks
+// for each check, add a tag to help us group them together
 export async function getCheckDefinitions(globPattern) {
   const files = glob.sync(globPattern, { cwd: process.cwd() });
 

@@ -26,4 +26,4 @@ jobs:
       run: npm i -g checkly-cli
 
     - name: Run Checkly Checks
-      run: checkly run --api-key "${{ secrets.CHECKLY_API_KEY }}" --checks "tests/*"
+      run: checkly run --api-key "${{ secrets.CHECKLY_API_KEY }}" --checks "tests/*.checks.json"

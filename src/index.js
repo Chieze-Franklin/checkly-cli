@@ -1,4 +1,4 @@
-import root from "app-root-path";
+// import root from "app-root-path"; // seems to break on Linux
 import boxen from "boxen";
 import chalk from "chalk";
 import terminalImage from "terminal-image";
@@ -9,10 +9,14 @@ import { getCheckDefinitions } from "./check-definitions.js";
 import { createCheck } from "./checkly-api.js";
 
 export async function main() {
+  // fancy block to draw the checkly racoon logo in the terminal
   try {
+    const root = require("app-root-path");
     console.log(await terminalImage.file(`${root.path}/assets/images/checkly_logo.png`, { width: "60%", height: "60%" }));
   }
   catch (e) {}
+
+  // fancy block to print "checkly cli" in the terminal
   const boxenOptions = {
     borderStyle: "bold",
     borderColor: "green",
