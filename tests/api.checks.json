@@ -5,17 +5,16 @@
         "checkType": "API",
         "name": "api-check-1",
         "script": "",
+        "frequency": 5,
         "request": {
             "method": "GET",
             "url": "https://api.checklyhq.com/",
-            "assertions": [
-            {
+            "assertions": [{
                 "source": "STATUS_CODE",
                 "target": "200",
                 "property": "",
                 "comparison": "EQUALS"
-            }
-            ]
+            }]
         }
     }]
 }

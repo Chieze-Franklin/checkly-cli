@@ -101,3 +101,36 @@ jobs:
 Ensure you create a [GitHub Secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets) for your `CHECKLY_API_KEY`.
 
 Henceforth, every time code is pushed to the `main` branch, checkly-cli will run against your check definitions.
+
+## Updating Checks
+
+To update a check on Checkly, simply update its check definiton. Whenever you run checkly-cli the CLI determines if a new check should be created or if an existing one should be updated. This way, running the CLI over and over does not result in duplicate checks on Checkly.
+
+For instance, to change the frequency of our existing check definition to 5 minutes, we add `"frequency": 5`:
+
+```json
+{
+    "name": "api-checks-suit-1",
+    "checks": [{
+        "activated": true,
+        "checkType": "API",
+        "name": "api-check-1",
+        "script": "",
+        "frequency": 5,
+        "request": {
+            "method": "GET",
+            "url": "https://api.checklyhq.com/",
+            "assertions": [
+            {
+                "source": "STATUS_CODE",
+                "target": "200",
+                "property": "",
+                "comparison": "EQUALS"
+            }
+            ]
+        }
+    }]
+}
+```
+
+Now run the previous chekcly run command, go to your Checkly dashboard and confirm that the frequency of the check is now 5 minutes.
