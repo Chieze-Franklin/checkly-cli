@@ -10,10 +10,10 @@ export async function getCheckDefinitions(globPattern) {
     let checks = jsonFile.checks;
 
     if (jsonFile.name) {
-        checks = jsonFile.checks.map((check) => ({
-            ...check,
-            tags: [...(check.tags || []), `checkly-cli-suite-name=${jsonFile.name}`]
-        }));
+      checks = jsonFile.checks.map((check) => ({
+        ...check,
+        tags: [...(check.tags || []), `checkly-cli-suite-name=${jsonFile.name}`]
+      }));
     }
     return checks;
   });

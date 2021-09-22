@@ -6,6 +6,7 @@ import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
 import { getCheckDefinitions } from "./check-definitions.js";
+import { createCheck } from "./checkly-api.js";
 
 export async function main() {
   try {
@@ -39,5 +40,5 @@ export async function main() {
     .argv;
 
   const checkDefs = await getCheckDefinitions(argv.checks);
-  console.log(checkDefs);
+  checkDefs.forEach((checkDef) => createCheck(checkDef, { apiKey: argv["api-key"] }))
 }
