@@ -5,6 +5,26 @@
         "checkType": "API",
         "name": "api-check-1",
         "script": "",
+        "frequency": 10,
+        "request": {
+            "method": "GET",
+            "url": "https://api.checklyhq.com/",
+            "assertions": [{
+                "source": "STATUS_CODE",
+                "target": "200",
+                "property": "",
+                "comparison": "EQUALS"
+            }],
+            "body": "",
+            "bodyType": "NONE",
+            "headers": [],
+            "queryParameters": []
+        }
+    }, {
+        "activated": true,
+        "checkType": "API",
+        "name": "api-check-2",
+        "script": "",
         "frequency": 5,
         "request": {
             "method": "GET",
@@ -14,12 +34,15 @@
                 "target": "200",
                 "property": "",
                 "comparison": "EQUALS"
-            }]
+            }],
+            "body": "",
+            "bodyType": "NONE",
+            "headers": [],
+            "queryParameters": []
         }
     }, {
         "activated": true,
-        "checkType": "API",
-        "name": "api-check-2",
+        "checkType": "BROWSERS",
         "script": "",
         "frequency": 5,
         "request": {

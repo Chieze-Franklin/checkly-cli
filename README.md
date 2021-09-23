@@ -137,8 +137,6 @@ Now run the previous checkly run command, go to your Checkly dashboard and confi
 
 **Note:** The root `name` field and the `name` field for each check definition are combined to uniquely identify a check on Checkly. Changing any of those `name` fields would cause a new check to be created (and the previous ones deleted) on Checkly. This is the only time changing a field in a check definition file leads to a new check being created on Checkly; every other field change leads to the existing check being updated on Checkly.
 
-**Note:** There's currently an issue with updating checks via the Checkly API, so we are currently not updating checks.
-
 ## Deleting Checks
 
 To delete a check created by checkly-cli simply delete its matching check definition from the appropriate JSON file.
