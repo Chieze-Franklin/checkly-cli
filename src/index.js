@@ -5,8 +5,8 @@ import terminalImage from "terminal-image";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
-import { getCheckDefinitions } from "./check-definitions.js";
-import { createOrUpdateCheck, deleteOrphanedCheck, getChecks } from "./checkly-api.js";
+import { getCheckDefinitions, getCheckGroupDefinitions } from "./check-definitions.js";
+import { createOrIgnoreCheckGroup, createOrUpdateCheck, deleteOrphanedCheck, getCheckGroups, getChecks, getMapOfCheckGroupNameToId } from "./checkly-api.js";
 
 export async function main() {
   // fancy block to draw the checkly racoon logo in the terminal
@@ -43,9 +43,33 @@ export async function main() {
     .usage("Usage: --checks <glob pattern>")
     .argv;
 
-  const checkDefs = await getCheckDefinitions(argv.checks);
-
   const options = { apiKey: argv["api-key"] };
+
+  const checkGroupDefs = await getCheckGroupDefinitions(argv.checks);
+  const existingCheckGroups = await getCheckGroups(options);
+  const createOrIgnoreCheckGroupPromises = checkGroupDefs.map((checkGroupDef) => createOrIgnoreCheckGroup(checkGroupDef, existingCheckGroups, options));
+  await Promise.all(createOrIgnoreCheckGroupPromises);
+
+  const mapOfCheckGroupNameToId = getMapOfCheckGroupNameToId();
+
+  const checkDefs = [...(await getCheckDefinitions(argv.checks))].map((checkDef) => {
+    const groupNameTag = checkDef.tags.find((tag) => tag.startsWith("checkly-cli-group-name="));
+
+    let groupName;
+    if (groupNameTag) {
+      groupName = groupNameTag.substr("checkly-cli-group-name=".length);
+    }
+
+    let groupId;
+    if (groupName) {
+      groupId = mapOfCheckGroupNameToId[groupName];
+    }
+
+    return {
+      ...checkDef,
+        ...(groupId && { groupId })
+    };
+  });
   const existingChecks = await getChecks(options);
   checkDefs.forEach((checkDef) => createOrUpdateCheck(checkDef, existingChecks, options));
   existingChecks.forEach((check) => deleteOrphanedCheck(check, checkDefs, options));

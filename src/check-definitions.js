@@ -1,57 +1,42 @@
-import Ajv from "ajv";
-import chalk from "chalk";
 import fs from 'fs';
 import glob from 'glob';
 import path from 'path';
 
-const ajv = new Ajv();
-const schema = {
-  type: "object",
-  properties: {
-    activated: { type: "boolean" },
-    checkType: { type: "string", pattern: "^(API|BROWSER)$" },
-    name: { type: "string" },
-    script: { type: "string" },
-    request: {
-      type: "object",
-      properties: {
-        method: { type: "string", pattern: "^(GET|DELETE|POST|PUT|get|delete|post|put)$" },
-        url: { type: "string" },
-        assertions: { type: "array" },
-        body: { type: "string" },
-        bodyType: { type: "string" },
-        headers: { type: "array" },
-        queryParameters: { type: "array" },
-      },
-      required: ["method", "url", "assertions", "body", "bodyType", "headers", "queryParameters"]
-    },
-    // TODO: add other fields
-  },
-  required: ["activated", "checkType", "name", "script", "request"],
-  additionalProperties: true,
-}
-const validate = ajv.compile(schema);
+import { validateCheck } from "./validations.js";
 
-const error = chalk.redBright;
+let files;
+
+function getFiles(globPattern) {
+  if (!files) {
+    const filePaths = glob.sync(globPattern, { cwd: process.cwd() });
+    files = filePaths.map((filePath) => ({
+      name: path.basename(filePath),
+      path: filePath,
+      content: fs.readFileSync(path.join(process.cwd(), filePath), {encoding:'utf8', flag:'r'}),
+    }));
+  }
+
+  return files;
+}
 
 // read all files matching the glob pattern
 // and return their checks
 // for each check, add a tag to help us group them together
 // and to help know which checks were created by the CLI
 export async function getCheckDefinitions(globPattern) {
-  const files = glob.sync(globPattern, { cwd: process.cwd() });
+  const files = getFiles(globPattern);
 
   const checkDefs = files.flatMap((file) => {
-    const jsonFile = JSON.parse(fs.readFileSync(path.join(process.cwd(), file), {encoding:'utf8', flag:'r'}));
-    let checks = jsonFile.checks;
+    const json = JSON.parse(file.content);
+    let checks = json.checks;
 
-    if (jsonFile.name) {
-      checks = jsonFile.checks.filter((check) => validateCheck(check, file)).map((check) => ({
+    if (json.name) {
+      checks = json.checks.filter((check) => validateCheck(check, file.path)).map((check) => ({
         ...check,
         tags: [
           ...(check.tags || []),
-          `checkly-cli-suite-name=${jsonFile.name}`,
-          `checkly-cli-full-name=${jsonFile.name}.${check.name}`
+          `checkly-cli-group-name=${json.name}`,
+          `checkly-cli-full-name=${json.name}.${check.name}`
         ]
       }));
     }
@@ -61,13 +46,20 @@ export async function getCheckDefinitions(globPattern) {
   return checkDefs;
 }
 
-function validateCheck(check, file) {
-  const valid = validate(check);
+export async function getCheckGroupDefinitions(globPattern) {
+  const files = getFiles(globPattern);
 
-  if (!valid) {
-    console.log(error(`==> Skipping invalid check definition${check.name ? ` (${check.name})` : ""} in ${file}`));
-    console.log(validate.errors.map((e) => e.message));
-  }
+  const allCheckGroupDefs = files.map((file) => {
+    const json = JSON.parse(file.content);
 
-  return valid;
+    return {
+      name: json.name,
+      locations: ["us-east-1"],
+      tags: [`checkly-cli-full-name=${json.name}`],
+    };
+  });
+
+  const uniqueCheckGroupDefs = allCheckGroupDefs.filter((group, index, array) => array.findIndex((g) => g.name === group.name) === index);
+
+  return uniqueCheckGroupDefs;
 }

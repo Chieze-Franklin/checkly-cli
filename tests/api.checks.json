@@ -1,11 +1,11 @@
 {
-    "name": "api-checks-suit-1",
+    "name": "api-checks-group-1",
     "checks": [{
         "activated": true,
         "checkType": "API",
         "name": "api-check-1",
         "script": "",
-        "frequency": 10,
+        "frequency": 5,
         "request": {
             "method": "GET",
             "url": "https://api.checklyhq.com/",
