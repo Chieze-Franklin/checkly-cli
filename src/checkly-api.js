@@ -21,8 +21,7 @@ export async function createOrUpdateCheck(checkDef, existingChecks, options) {
   const matchingExistingCheck = existingChecks.find((c) => c.name === checkDef.name && c.tags.includes(fullNameTag));
 
   if (matchingExistingCheck) {
-    // TODO: server throws 500 internal server error when we try to update, so we just ignore for now
-    // await updateCheck(matchingExistingCheck.id, checkDef, options);
+    await updateCheck(matchingExistingCheck.id, checkDef, options);
   } else {
     await createCheck(checkDef, options);
   }
